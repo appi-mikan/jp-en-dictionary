@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>双方向英単語辞書</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      background: #111;
+      color: #f5f5f5;
+      padding: 40px;
+      text-align: center;
+    }
+    input {
+      width: 80%;
+      max-width: 480px;
+      padding: 12px;
+      font-size: 18px;
+      border-radius: 8px;
+      border: none;
+      margin-bottom: 20px;
+    }
+    .result {
+      margin-top: 20px;
+      font-size: 22px;
+      color: #7fdcff;
+      white-space: pre-line;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>双方向英単語辞書（202語）</h1>
+  <p>日本語でも英語でも入力できます</p>
+
+  <input id="search" type="text" placeholder="単語を入力…" />
+
+  <div id="result" class="result"></div>
+
+  <script>
+    const words = [
+      { jp:"裏付ける（本当だと）確認する", en:"confirm" },
+      { jp:"予定を変更する", en:"reschedule" },
+      { jp:"大通り", en:"avenue" },
+      { jp:"目的地", en:"destination" },
+      { jp:"束ねる/義務を負わせる", en:"bind" },
+      { jp:"縛られた/義務のある/～行きの/必ず～する", en:"bound" },
+      { jp:"旅館", en:"inn" },
+      { jp:"収容する，家", en:"house" },
+      { jp:"収容・宿泊できる", en:"accommodate" },
+      { jp:"宿泊施設，収容力", en:"accommodation" },
+      { jp:"壮大な", en:"magnificent" },
+      { jp:"生息地", en:"home" },
+      { jp:"地中海の", en:"Mediterranean" },
+      { jp:"地下", en:"basement" },
+      { jp:"貴重品", en:"valuables" },
+      { jp:"所有物", en:"belongings" },
+      { jp:"記念品，おみやげ", en:"souvenir" },
+      { jp:"通貨/普及", en:"currency" },
+      { jp:"食欲", en:"appetite" },
+      { jp:"味", en:"flavor" },
+      { jp:"お手洗い", en:"restroom" },
+      { jp:"お手洗い，化粧室", en:"lavatory" },
+      { jp:"空いている", en:"vacant" },
+      { jp:"札，値札", en:"tag" },
+      { jp:"検査/伝票/小切手/検査する/預ける", en:"check" },
+      { jp:"本物の", en:"genuine" },
+      { jp:"予算", en:"budget" },
+      { jp:"部門", en:"department" },
+      { jp:"領収書/受け取ること", en:"receipt" },
+      { jp:"レジ係", en:"cashier" },
+      { jp:"信用", en:"credit" },
+      { jp:"長さ", en:"length" },
+      { jp:"無料の", en:"complimentary" },
+      { jp:"青ざめた", en:"pale" },
+      { jp:"（薬の）服用量", en:"dose" },
+      { jp:"めまいがする", en:"dizzy" },
+      { jp:"眠気", en:"drowsiness" },
+      { jp:"マンガ", en:"manga" },
+      { jp:"オタク", en:"geek" },
+      { jp:"カラオケ", en:"karaoke" },
+      { jp:"自衛隊", en:"the Self-Defense Forces" },
+      { jp:"憲法第9条", en:"Article 9" },
+      { jp:"北方領土", en:"the Northern Territories" },
+      { jp:"合法化する", en:"legalize" },
+      { jp:"禁止する", en:"prohibit" },
+      { jp:"（法的に）禁止する", en:"ban" },
+      { jp:"禁止する", en:"forbid" },
+      { jp:"神", en:"deity" },
+      { jp:"祭る", en:"enshrine" },
+      { jp:"統治/統治する", en:"reign" },
+      { jp:"塔", en:"pagoda" },
+      { jp:"城", en:"castle" },
+      { jp:"墓", en:"tomb" },
+      { jp:"将軍の職，幕府", en:"shogunate" },
+      { jp:"構成，憲法", en:"constitution" },
+      { jp:"封建的な", en:"feudal" },
+      { jp:"太平洋の", en:"Pacific" },
+      { jp:"大西洋の", en:"Atlantic" },
+      { jp:"日本海", en:"the Sea of Japan" },
+      { jp:"列島", en:"archipelago" },
+      { jp:"盆地", en:"basin" },
+      { jp:"谷", en:"valley" },
+      { jp:"高度，標高", en:"altitude" },
+      { jp:"漆（うるし）", en:"lacquer" },
+      { jp:"国宝", en:"national treasure" },
+      { jp:"回復させる", en:"restore" },
+      { jp:"指定する", en:"designate" },
+      { jp:"成分，材料", en:"ingredient" },
+      { jp:"主要な/主要産物", en:"staple" },
+      { jp:"季節，味付けする", en:"season" },
+      { jp:"薄切りの", en:"thinly sliced" },
+      { jp:"上に乗せる", en:"top" },
+      { jp:"油で揚げた", en:"deep-fried" },
+      { jp:"（揚げ物に）衣をつける", en:"batter" },
+      { jp:"（-sで）ピクルス/塩漬けにする", en:"pickle" },
+      { jp:"だし", en:"broth" },
+      { jp:"発酵させる", en:"ferment" },
+      { jp:"そば粉", en:"buckwheat" },
+      { jp:"自給自足", en:"self-sufficiency" },
+      { jp:"2011年の東日本大震災", en:"the 2011 Tohoku Earthquake" },
+      { jp:"津波", en:"tsunami" },
+      { jp:"予防の", en:"preventive" },
+      { jp:"核の，原子力の", en:"nuclear" },
+      { jp:"放射能", en:"radiation" },
+      { jp:"放射能の", en:"radioactive" },
+      { jp:"汚染する", en:"contaminate" },
+      { jp:"名声", en:"prestige" },
+      { jp:"有名な，一流の", en:"prestigious" },
+      { jp:"際立った", en:"distinguished" },
+      { jp:"有名な", en:"renowned" },
+      { jp:"有名な", en:"noted" },
+      { jp:"注目すべき", en:"notable" },
+      { jp:"洗練された", en:"sophisticated" },
+      { jp:"洗練された", en:"refined" },
+      { jp:"花，花が咲く", en:"bloom" },
+      { jp:"アジサイ", en:"hydrangea" },
+      { jp:"鬼", en:"ogre" },
+      { jp:"あちこちで見かける", en:"ubiquitous" },
+      { jp:"仕組み", en:"mechanism" },
+      { jp:"固有の", en:"indigenous" },
+      { jp:"人口ピラミッド", en:"population pyramid" },
+      { jp:"長寿，寿命", en:"longevity" },
+      { jp:"特集，特徴/顔立ち/特集する，主演させる，特徴づける", en:"feature" },
+      { jp:"倍に増える（増やす），倍の，二重に，倍", en:"double" },
+      { jp:"変動する", en:"fluctuate" },
+      { jp:"急増する/ロケット", en:"rocket" },
+      { jp:"増える，増やす", en:"increase" },
+      { jp:"減る，減らす", en:"decrese" },
+      { jp:"水平線/横ばいになる", en:"level" },
+      { jp:"調査する，調査", en:"survey" },
+      { jp:"行う", en:"conduct" },
+      { jp:"説明する", en:"illustrate" },
+      { jp:"調査する", en:"investigate" },
+      { jp:"計算する", en:"calculate" },
+      { jp:"分析する", en:"analyze" },
+      { jp:"比較する", en:"compare" },
+      { jp:"図表", en:"diagram" },
+      { jp:"軸", en:"axis" },
+      { jp:"品物，項目", en:"item" },
+      { jp:"構成要素", en:"component" },
+      { jp:"単位", en:"unit" },
+      { jp:"表", en:"table" },
+      { jp:"表", en:"chart" },
+      { jp:"区分", en:"category" },
+      { jp:"アンケート", en:"questionnaire" },
+      { jp:"割合", en:"ratio" },
+      { jp:"（国勢）調査", en:"census" },
+      { jp:"金額/合計", en:"sum" },
+      { jp:"要求/需要，要求する/必要とする", en:"demand" },
+      { jp:"割合，率/料金", en:"rate" },
+      { jp:"割合", en:"proportion" },
+      { jp:"パーセント，百分率", en:"percentage" },
+      { jp:"比較", en:"comparison" },
+      { jp:"程度", en:"degree" },
+      { jp:"統計，統計学", en:"statistics" },
+      { jp:"研究", en:"research" },
+      { jp:"手段", en:"means" },
+      { jp:"差", en:"gap" },
+      { jp:"記録，記録する", en:"record" },
+      { jp:"データ", en:"data" },
+      { jp:"目的，狙う", en:"aim" },
+      { jp:"目的", en:"purpose" },
+      { jp:"目標", en:"goal" },
+      { jp:"指示", en:"instruction" },
+      { jp:"垂直の，縦の", en:"vertical" },
+      { jp:"地平線上の/横の", en:"horizontal" },
+      { jp:"以前の，前者の", en:"former" },
+      { jp:"次の，以下の", en:"following" },
+      { jp:"無作為の", en:"random" },
+      { jp:"比例して", en:"proportionate" },
+      { jp:"正確な", en:"accurate" },
+      { jp:"年間の/例年の", en:"annual" },
+      { jp:"除々の", en:"gradual" },
+      { jp:"安定した", en:"steady" },
+      { jp:"安定した", en:"stable" },
+      { jp:"（坂などが）急な", en:"steep" },
+      { jp:"首位の/主要な", en:"leading" },
+      { jp:"およそ", en:"approximately" },
+      { jp:"比較的", en:"relatively" },
+      { jp:"ますます", en:"increasingly" },
+      { jp:"貼る，（文房具の）のり", en:"paste" },
+      { jp:"おじぎする", en:"bow" },
+      { jp:"スキップする/飛ばす，サボる，スキップ/省略", en:"skip" },
+      { jp:"つかむ", en:"grab" },
+      { jp:"しっかりにぎる", en:"grip" },
+      { jp:"ぎゅっとつかむ/理解する", en:"grasp" },
+      { jp:"曲げる", en:"bend" },
+      { jp:"伸ばす", en:"stretch" },
+      { jp:"消す", en:"erase" },
+      { jp:"上がる", en:"ascend" },
+      { jp:"追い越す", en:"overtake" },
+      { jp:"目覚めている，目覚める/起こす", en:"awake" },
+      { jp:"ホチキス", en:"stapler" },
+      { jp:"ひざまずく", en:"kneel" },
+      { jp:"調整する，曲", en:"tune" },
+      { jp:"取り出す", en:"unpack" },
+      { jp:"結び目", en:"knot" },
+      { jp:"くしゃみをする", en:"sneeze" },
+      { jp:"掃く", en:"sweep" },
+      { jp:"ささやく", en:"whisper" },
+      { jp:"あくびする", en:"yawn" },
+      { jp:"急ぐこと", en:"haste" },
+      { jp:"列", en:"queue" },
+      { jp:"しぶき，スプレー，吹きかける", en:"spray" },
+      { jp:"気晴らし，趣味", en:"pastime" },
+      { jp:"悪夢", en:"nightmare" },
+      { jp:"置く/預ける，預金する，手付金，頭金", en:"deposit" },
+      { jp:"手をたたく，拍手する", en:"clap" },
+      { jp:"拍手（喝采）", en:"applause" },
+      { jp:"（平手で）たたく", en:"slap" },
+      { jp:"ごしごし磨く", en:"scrub" },
+      { jp:"こする", en:"rub" },
+      { jp:"染める", en:"dye" },
+      { jp:"香水", en:"perfume" },
+      { jp:"避難", en:"refuge" },
+      { jp:"堅い", en:"stiff" },
+      { jp:"棒，渋滞にはまらせる", en:"stick" },
+      { jp:"器具，電化製品", en:"appliance" },
+      { jp:"プラグを抜く", en:"unplug" },
+      { jp:"照らす/啓蒙する", en:"illuminate" },
+      { jp:"取り付ける/（パソコンに）インストールする", en:"install" },
+      { jp:"挿入する", en:"insert" }
+    ];
+
+    const search = document.getElementById("search");
+    const result = document.getElementById("result");
+
+    search.addEventListener("input", () => {
+      const q = search.value.trim().toLowerCase();
+      if (!q) {
+        result.textContent = "";
+        return;
+      }
+
+      const matches = words.filter(w =>
+        w.jp.includes(q) || w.en.toLowerCase().includes(q)
+      );
+
+      if (matches.length === 0) {
+        result.textContent = "一致なし";
+        return;
+      }
+
+      result.textContent = matches
+        .map(w => `${w.jp}  →  ${w.en}`)
+        .join("\n");
+    });
+  </script>
+
+</body>
+</html>
